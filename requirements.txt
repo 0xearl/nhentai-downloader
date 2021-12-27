@@ -1,0 +1,4 @@
+requrests
+argparse
+bs4
+
