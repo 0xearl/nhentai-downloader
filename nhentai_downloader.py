@@ -47,7 +47,10 @@ class DoujinDownloader():
 	def download(self):
 		title = self.getTitle()
 		images = self.getImages()
+		author = regex.search('^\\[[a-zA-Z ]*\\w+\\]', title)
 		print('Downloading %s...' % (title))
+		print('Artist/Author: %s' % (author.group()))
+		print('Pages: %s' % (len(images)))
 		for count, link in enumerate(images):
 			image = self.session.get(link, verify=False)
 			if image.status_code != 200:
