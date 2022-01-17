@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import requests, os, argparse
 import re as regex
 from bs4 import BeautifulSoup
