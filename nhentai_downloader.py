@@ -65,7 +65,7 @@ class DoujinDownloader():
 
 		
 def main():
-	parser = argparse.ArgumentParser(description='Download Doujins from https://nhentai.net without making an account!')
+	parser = argparse.ArgumentParser(description='Download Doujins from https://nhentai.net without making an account!',formatter_class=argparse.RawTextHelpFormatter)
 	parser._action_groups.pop()
 	required = parser.add_argument_group('required arguments')
 	optional = parser.add_argument_group('optional arguments')
