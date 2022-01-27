@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import requests, os, argparse
+import requests, os, argparse, json
 import re as regex
 from bs4 import BeautifulSoup
 from pathlib import Path
@@ -34,11 +34,37 @@ class DoujinDownloader():
 		self.page = self.session.get(self.url, verify=False)
 		self.soup = BeautifulSoup(self.page.text, 'html.parser')
 
-	def getTitle(self):
-		title = self.soup.find('h1', {'class': 'title'}).get_text()
-		title = regex.sub('[^a-zA-z]\\s', '', title)
-		return title
+	def doujinInfo(self):
+		info = regex.search('\\{.*\\:\\{.*\\:.*\\}\\}\,..*\\}', self.page.text);
+		info = info.group().replace('\\u0022', '"').replace('\\u005c', '\\').replace('\\u002F', '/')
+		info = json.loads(info)
 
+		return info;
+
+	def infoblock(self):
+		doujinInfo = self.doujinInfo()
+		print('Downloading: %s' % (doujinInfo['title']['pretty']))
+		print('Pages: %s' % (doujinInfo['num_pages']))
+		test = map(self.returntags, doujinInfo['tags'])
+		tags = 'Tags: '
+		for tag in test:
+			if tag == None:
+				pass
+			else:
+				tags += '%s, ' % (tag['name'])
+		print(tags)
+		for tag in doujinInfo['tags']:
+			if tag['type'] == 'artist':
+				print('Artist: %s' % (tag['name']))
+			elif tag['type'] == 'group':
+				print('Group: %s' % (tag['name']))
+			else:
+				pass
+
+	def returntags(self, tag):
+		if tag['type'] == 'tag':
+			return tag
+		
 	def getImages(self):
 		images = self.soup.find('div', {'class': 'thumbs'})
 		images = images.find_all('img', {'class': 'lazyload'})
@@ -47,12 +73,9 @@ class DoujinDownloader():
 		return images
 
 	def download(self):
-		title = self.getTitle()
+		title = self.doujinInfo()['title']['pretty']
+		self.infoblock()
 		images = self.getImages()
-		author = regex.search('^\\[[a-zA-Z ]*\\w+\\]', title)
-		print('Downloading %s...' % (title))
-		print('Artist/Author: %s' % (author.group()))
-		print('Pages: %s' % (len(images)))
 		for count, link in enumerate(images):
 			image = self.session.get(link, verify=False)
 			if image.status_code != 200:
@@ -69,7 +92,7 @@ def main():
 	parser._action_groups.pop()
 	required = parser.add_argument_group('required arguments')
 	optional = parser.add_argument_group('optional arguments')
-	required.add_argument('-doujin', help='Doujin to be downloaded. \nex: https://nhentai.net/g/xxxxxx, xxxxxx, nhentai.net/g/xxxxxx')
+	required.add_argument('-d', '--doujin', help='Doujin to be downloaded. \nex: https://nhentai.net/g/xxxxxx, xxxxxx, nhentai.net/g/xxxxxx')
 	optional.add_argument('-path', default='', help='Path to store the downloaded doujin. \n[default] is the current path.')
 
 	args = parser.parse_args()
