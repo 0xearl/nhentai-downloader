@@ -45,21 +45,22 @@ class DoujinDownloader():
 		doujinInfo = self.doujinInfo()
 		print('Downloading: %s' % (doujinInfo['title']['pretty']))
 		print('Pages: %s' % (doujinInfo['num_pages']))
-		test = map(self.returntags, doujinInfo['tags'])
 		tags = 'Tags: '
-		for tag in test:
-			if tag == None:
-				pass
-			else:
-				tags += '%s, ' % (tag['name'])
+		language = 'Language: '
 		print(tags)
 		for tag in doujinInfo['tags']:
-			if tag['type'] == 'artist':
+			if tag['type'] == 'tag':
+				tags += '%s, ' % (tag['name']) 
+			elif tag['type'] == 'artist':
 				print('Artist: %s' % (tag['name']))
 			elif tag['type'] == 'group':
 				print('Group: %s' % (tag['name']))
+			elif tag['type'] == 'language':
+				language += '%s, ' % (tag['name'])
 			else:
 				pass
+		print(tags)
+		print(language)
 
 	def returntags(self, tag):
 		if tag['type'] == 'tag':
