@@ -9,11 +9,11 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 class DoujinDownloader():
-	
+
 	"""
 		This class is for downloading doujins with nhentai.net
 	"""
-	
+
 	def __init__(self, string, path=''):
 
 		if len(string) == 6:
@@ -50,7 +50,7 @@ class DoujinDownloader():
 		print(tags)
 		for tag in doujinInfo['tags']:
 			if tag['type'] == 'tag':
-				tags += '%s, ' % (tag['name']) 
+				tags += '%s, ' % (tag['name'])
 			elif tag['type'] == 'artist':
 				print('Artist: %s' % (tag['name']))
 			elif tag['type'] == 'group':
@@ -62,10 +62,6 @@ class DoujinDownloader():
 		print(tags)
 		print(language)
 
-	def returntags(self, tag):
-		if tag['type'] == 'tag':
-			return tag
-		
 	def getImages(self):
 		images = self.soup.find('div', {'class': 'thumbs'})
 		images = images.find_all('img', {'class': 'lazyload'})
@@ -87,7 +83,7 @@ class DoujinDownloader():
 			open(file, 'wb+').write(image.content)
 		print('Finished Downloading %s ' % (title))
 
-		
+
 def main():
 	parser = argparse.ArgumentParser(description='Download Doujins from https://nhentai.net without making an account!',formatter_class=argparse.RawTextHelpFormatter)
 	parser._action_groups.pop()
