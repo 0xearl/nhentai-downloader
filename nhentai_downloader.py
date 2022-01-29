@@ -47,7 +47,6 @@ class DoujinDownloader():
 		print('Pages: %s' % (doujinInfo['num_pages']))
 		tags = 'Tags: '
 		language = 'Language: '
-		print(tags)
 		for tag in doujinInfo['tags']:
 			if tag['type'] == 'tag':
 				tags += '%s, ' % (tag['name'])
